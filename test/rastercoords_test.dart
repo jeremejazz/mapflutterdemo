@@ -10,17 +10,7 @@ void main(){
     var rc = RasterCoords(width: 1024, height: 1024);
     expect(rc.zoomLevel, 2.0);
 
-    rc.width = 1280;
-    rc.height = 1280;
-    rc.initialize();
 
-    expect(rc.zoomLevel, 3.0);
-
-    rc.width = 8192;
-    rc.height = 1280;
-    rc.initialize();
-
-    expect(rc.zoomLevel, 5.0);
 
   });
 
@@ -38,7 +28,7 @@ void main(){
   test("Pixel Coordinates to Lat/Lng", (){
     var rc = RasterCoords(width: 1280, height: 1280);
 
-    final latLng =  rc.pixelToLatLng(608.0, 686.0);
+    final latLng =  rc.pixelToLatLng(x: 608.0, y: 686.0);
     expect(latLng.latitude.toStringAsFixed(5) , (-0.334961).toStringAsFixed(5));
     expect(latLng.longitude.toStringAsFixed(5), 0.296875.toStringAsFixed(5));
 

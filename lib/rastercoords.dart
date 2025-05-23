@@ -2,31 +2,36 @@ import 'dart:math' show log, Point, max;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-/// flutter_map utility for image map projection
+/// Utility class for projecting raster image coordinates onto a map
+/// and vice-versa within a Flutter Map context.
+///
+/// This class helps in converting pixel coordinates of an image to geographical
+/// latitude/longitude coordinates and back, considering a specific tile size
+/// and the image's dimensions.
 class RasterCoords {
-  CrsSimple crsSimple = CrsSimple();
-  late double scale;
-  late double zoomLevel;
-  double width;
-  double height;
-  double tileSize;
+  static const CrsSimple _crsSimple = CrsSimple();
 
-  RasterCoords({
-    required this.width,
-    required this.height,
-    this.tileSize = 256,
-  }) {
-    initialize();
-  }
+  final double scale;
+  final double zoomLevel;
+  final double width;
+  final double height;
+  final double tileSize;
 
-  /// initialize the zoom level and scale
-  void initialize(){
-    zoomLevel = computeZoomLevel();
-    scale = crsSimple.scale(zoomLevel);
-  }
+  /// Creates a [RasterCoords] instance.
+  ///
+  /// Requires the image [width] and [height] in pixels.
+  /// [tileSize] defaults to 256.
+  RasterCoords({required this.width, required this.height, this.tileSize = 256})
+    : zoomLevel = _calculateZoomLevel(width, height, tileSize),
+      scale = _crsSimple.scale(_calculateZoomLevel(width, height, tileSize));
 
-  /// compute the zoomLevel based on the image [width] and [height]
-  double computeZoomLevel() {
+  /// Computes the optimal zoom level based on the image [width], [height],
+  /// and [tileSize].
+  static double _calculateZoomLevel(
+    double width,
+    double height,
+    double tileSize,
+  ) {
     return (log(max(width, height) / tileSize) / log(2)).ceil().toDouble();
   }
 
@@ -34,38 +39,30 @@ class RasterCoords {
   /// of the raster image
   ///
   /// returns latitude and longitude
-  LatLng pixelToLatLng(double x, double y) {
-    final (double lat, double lng) = crsSimple.untransform(
-      -y,
-      -x,
-      crsSimple.scale(zoomLevel),
-    );
+  LatLng pixelToLatLng({required double x, required double y}) {
+    final (double lat, double lng) = _crsSimple.untransform(-y, -x, scale);
 
     return LatLng(lat, lng);
   }
 
-  /// Converts [LatLng] to pixel based on
-  /// the [latitude] and [longitude]
-  /// coordinates from the map
+
+  /// Converts geographical [LatLng] coordinates to pixel [Point] coordinates
+  /// (relative to the top-left of the raster image).
   ///
   /// returns a [Point] object with x and y coordinates
   /// of the pixel
   Point latLngToPixel(LatLng latLng) {
-    final lng = latLng.longitude;
-    final lat = latLng.latitude;
-    final (double x, double y) = crsSimple.transform(
-      lng,
-      lat,
-      crsSimple.scale(zoomLevel),
-    );
+    final (lat, lng) = (latLng.latitude, latLng.longitude);
+    final (double x, double y) = _crsSimple.transform(lng, lat, scale);
 
     return Point(x, y);
   }
 
-  /// Get the max bounds of the image
+  /// Gets the geographical bounding box ([LatLngBounds]) that encompasses
+  /// the entire raster image.
   LatLngBounds getMaxBounds() {
-    final southWest = pixelToLatLng(0, height);
-    final northEast = pixelToLatLng(width, 0);
+    final southWest = pixelToLatLng(x: 0, y: height);
+    final northEast = pixelToLatLng(x: width, y: 0);
 
     return LatLngBounds(southWest, northEast);
   }

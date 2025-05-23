@@ -53,10 +53,10 @@ class MapFlutter extends StatelessWidget {
 
                 },
 
-                crs: rc.crsSimple,
+                crs: CrsSimple(),
 
                 // initialCenter: pixelToLatLng(1280/2,1280/2, 3),
-                initialCenter: rc.pixelToLatLng(1280 / 2, 1280 / 2),
+                initialCenter: rc.pixelToLatLng(x: 1280 / 2,y: 1280 / 2),
                 maxZoom: 3,
                 minZoom: 1,
                 initialZoom: 1,
@@ -66,7 +66,7 @@ class MapFlutter extends StatelessWidget {
                 MarkerLayer(
                   markers: [
                     Marker(
-                      point: rc.pixelToLatLng(1280 / 2, 1280 / 2),
+                      point: rc.pixelToLatLng(x: 1280 / 2, y: 1280 / 2),
                       width: 30,
                       height: 30,
                       child: FlutterLogo(),
