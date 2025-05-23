@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +25,11 @@ class MapFlutter extends StatelessWidget {
   }
 
   String getMapUrl(){
+    if(kIsWeb){
+      return "http://localhost:8000/map_tiles/{z}/{x}/{y}.png";
+    }
+
+
     if (Platform.isAndroid) {
       return "http://10.0.2.2:8000/map_tiles/{z}/{x}/{y}.png";
 
