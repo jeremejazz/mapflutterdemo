@@ -31,20 +31,20 @@ class RasterCoords {
   /// of the raster image
   ///
   /// returns latitude and longitude
-  (double lat, double lng) pixelToLatLng(double x, double y) {
+  LatLng pixelToLatLng(double x, double y) {
 
-   final (double lng, double lat) = crsSimple.untransform(-y, -x, crsSimple.scale(zoomLevel));
+   final (double lat, double lng) = crsSimple.untransform(-y, -x, crsSimple.scale(zoomLevel));
 
-   return (lat, lng);
+   return LatLng(lat, lng);
   }
 
-  /// Converts [latlng] to pixel based on
+  /// Converts [LatLng] to pixel based on
   /// the [latitude] and [longitude] coordinates
   ///
   /// returns [x] and [y] coordinates
   (double x, double y) latLngToPixel(double lat, double lng) {
 
-    final (double y, double x) = crsSimple.transform(lng, lat, crsSimple.scale(zoomLevel));
+    final (double x, double y) = crsSimple.transform(lng, lat, crsSimple.scale(zoomLevel));
 
     return (x, y);
 
@@ -56,10 +56,10 @@ class RasterCoords {
     return Point(x,y);
   }
   /// based on leaflet's [Map#unproject] method
-  LatLng unproject(Point point) {
-    final (double lat, double lng) = pixelToLatLng(point.x.toDouble(), point.y.toDouble());
-    return LatLng(lat, lng);
-  }
+  // LatLng unproject(Point point) {
+  //   final (double lat, double lng) = pixelToLatLng(point.x.toDouble(), point.y.toDouble());
+  //   return LatLng(lat, lng);
+  // }
 
   LatLngBounds getMaxBounds() {
   /**
