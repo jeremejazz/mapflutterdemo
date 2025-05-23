@@ -44,10 +44,11 @@ class MapFlutter extends StatelessWidget {
                 cameraConstraint: CameraConstraint.containCenter(
                   bounds: rc.getMaxBounds(),
                 ),
-                onTap: (tapPosition, point) {
-                 final pixelCoords = rc.latLngToPixel(point);
+                onTap: (tapPosition, latLng) {
+                 final pixelCoords = rc.latLngToPixel(latLng);
+                 debugPrint('Lat/Lng Coords: $latLng');
                   debugPrint(
-                    'Pixel Coords $pixelCoords ',
+                    'Pixel Coords: $pixelCoords ',
                   );
 
                 },

@@ -2,6 +2,7 @@ import 'dart:math' show log, Point, max;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+/// flutter_map utility for image map projection
 class RasterCoords {
   CrsSimple crsSimple = CrsSimple();
   late double scale;
@@ -15,10 +16,16 @@ class RasterCoords {
     required this.height,
     this.tileSize = 256,
   }) {
+    initialize();
+  }
+
+  /// initialize the zoom level and scale
+  void initialize(){
     zoomLevel = computeZoomLevel();
     scale = crsSimple.scale(zoomLevel);
   }
 
+  /// compute the zoomLevel based on the image [width] and [height]
   double computeZoomLevel() {
     return (log(max(width, height) / tileSize) / log(2)).ceil().toDouble();
   }
