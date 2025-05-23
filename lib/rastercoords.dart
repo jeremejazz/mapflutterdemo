@@ -38,17 +38,21 @@ class RasterCoords {
   }
 
   /// Converts [LatLng] to pixel based on
-  /// the [latitude] and [longitude] coordinates
+  /// the [latitude] and [longitude]
+  /// coordinates from the map
   ///
-  /// returns [x] and [y] coordinates
-  (double x, double y) latLngToPixel(double lat, double lng) {
+  /// returns a [Point] object with x and y coordinates
+  /// of the pixel
+  Point latLngToPixel(LatLng latLng) {
+    final lng = latLng.longitude;
+    final lat = latLng.latitude;
     final (double x, double y) = crsSimple.transform(
       lng,
       lat,
       crsSimple.scale(zoomLevel),
     );
 
-    return (x, y);
+    return Point(x, y);
   }
 
   /// Get the max bounds of the image

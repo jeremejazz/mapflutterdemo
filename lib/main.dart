@@ -43,28 +43,13 @@ class MapFlutter extends StatelessWidget {
               options: MapOptions(
                 cameraConstraint: CameraConstraint.containCenter(
                   bounds: rc.getMaxBounds(),
-                  // bounds: LatLngBounds(
-                  //   pixelToLatLng(0, 0, 3),
-                  //   pixelToLatLng(1280, 1280, 3),
-                  // ),
                 ),
                 onTap: (tapPosition, point) {
-                  const crsSimple = CrsSimple();
-
-                  // this is the way!
-                  // ceiling( log(imagesize / tilesize) / log(2) )
-                  var (transformedX, transformedY) = crsSimple.transform(
-                    point.longitude,
-                    point.latitude,
-                    crsSimple.scale(3),
-                  );
+                 final pixelCoords = rc.latLngToPixel(point);
                   debugPrint(
-                    'TransformedX: ${transformedX.ceil()}, TransformedY: ${transformedY.ceil()}',
+                    'Pixel Coords $pixelCoords ',
                   );
 
-                  debugPrint(
-                    '${rc.latLngToPixel(point.latitude, point.longitude)}',
-                  );
                 },
 
                 crs: rc.crsSimple,
