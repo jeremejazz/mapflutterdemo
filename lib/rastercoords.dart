@@ -20,11 +20,7 @@ class RasterCoords {
   }
 
   double computeZoomLevel() {
-
-    return (log(max(width, height) / tileSize) /
-        log(2))
-        .ceil()
-        .toDouble();
+    return (log(max(width, height) / tileSize) / log(2)).ceil().toDouble();
   }
 
   /// Converts pixel to latlng based on the [x] and [y] coordinates
@@ -32,10 +28,13 @@ class RasterCoords {
   ///
   /// returns latitude and longitude
   LatLng pixelToLatLng(double x, double y) {
+    final (double lat, double lng) = crsSimple.untransform(
+      -y,
+      -x,
+      crsSimple.scale(zoomLevel),
+    );
 
-   final (double lat, double lng) = crsSimple.untransform(-y, -x, crsSimple.scale(zoomLevel));
-
-   return LatLng(lat, lng);
+    return LatLng(lat, lng);
   }
 
   /// Converts [LatLng] to pixel based on
@@ -43,37 +42,20 @@ class RasterCoords {
   ///
   /// returns [x] and [y] coordinates
   (double x, double y) latLngToPixel(double lat, double lng) {
-
-    final (double x, double y) = crsSimple.transform(lng, lat, crsSimple.scale(zoomLevel));
+    final (double x, double y) = crsSimple.transform(
+      lng,
+      lat,
+      crsSimple.scale(zoomLevel),
+    );
 
     return (x, y);
-
   }
 
-  /// based on leaflet's [Map#project] method
-  Point project(LatLng latLng) {
-    final (double x, double y) = latLngToPixel(latLng.latitude, latLng.longitude);
-    return Point(x,y);
-  }
-  /// based on leaflet's [Map#unproject] method
-  // LatLng unproject(Point point) {
-  //   final (double lat, double lng) = pixelToLatLng(point.x.toDouble(), point.y.toDouble());
-  //   return LatLng(lat, lng);
-  // }
-
+  /// Get the max bounds of the image
   LatLngBounds getMaxBounds() {
-  /**
-   *  var southWest = this.unproject([0, this.height])
-      var northEast = this.unproject([this.width, 0])
-      return new L.LatLngBounds(southWest, northEast)
-   */
+    final southWest = pixelToLatLng(0, height);
+    final northEast = pixelToLatLng(width, 0);
 
-  return LatLngBounds(
-  LatLng(90, -180),
-  LatLng(-90, 180),
-  );
-
+    return LatLngBounds(southWest, northEast);
   }
-
-
 }
